@@ -14,6 +14,7 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QStandardPaths>
 
 class MainWindow : public QMainWindow
 {

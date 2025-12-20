@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget(new QWidget(this))
 {
     setCentralWidget(centralWidget);
-    QStackedLayout *stack = new QStackedLayout(centralWidget);
+    QStackedLayout *stack = new QStackedLayout(centralWidget); //stock all the menus
     QWidget *home = new QWidget();
     QGridLayout *gridLayout = new QGridLayout(home);
     home->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(choiceGame, 0, 0, 1, 2);
 
         xb1 = new QPushButton("Xenoblade DE", this);
-        xb1->setFixedWidth(200);
+        xb1->setMinimumHeight(100);
         gridLayout->addWidget(xb1, 1, 0);
         connect(xb1, &QPushButton::clicked, this, [this, stack]()
         {
@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb2 = new QPushButton("Xenoblade 2", this);
-        xb2->setFixedWidth(200);
+        xb2->setMinimumHeight(100);
         gridLayout->addWidget(xb2, 1, 1);
         connect(xb2, &QPushButton::clicked, this, [this, stack]()
         {
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb3 = new QPushButton("Xenoblade 3", this);
-        xb3->setFixedWidth(200);
+        xb3->setMinimumHeight(100);
         gridLayout->addWidget(xb3, 2, 0);
         connect(xb3, &QPushButton::clicked, this, [this, stack]()
         {
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xbx = new QPushButton("Xenoblade X", this);
-        xbx->setFixedWidth(200);
+        xbx->setMinimumHeight(100);
         gridLayout->addWidget(xbx, 2, 1);
         connect(xbx, &QPushButton::clicked, this, [this, stack]()
         {
@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
         QLabel *archive = new QLabel("Archive", this);
         taskGridLayout->addWidget(archive, 1, 0);
             ExtractArchive = new QPushButton("Extract Archive", this);
-            ExtractArchive->setFixedWidth(200);
+            ExtractArchive->setMinimumWidth(200);
             taskGridLayout->addWidget(ExtractArchive, 2, 0);
             connect(ExtractArchive, &QPushButton::clicked, this, [this]()
             {
@@ -79,66 +79,66 @@ MainWindow::MainWindow(QWidget *parent)
             });
 
             ReplaceArchive = new QPushButton("Replace Archive", this);
-            ReplaceArchive->setFixedWidth(200);
+            ReplaceArchive->setMinimumWidth(200);
             taskGridLayout->addWidget(ReplaceArchive, 3, 0);
 
         QLabel *bdat = new QLabel("BDAT", this);
         taskGridLayout->addWidget(bdat, 1, 1);
             DecryptBdat = new QPushButton("Decrypt Bdat", this);
-            DecryptBdat->setFixedWidth(200);
+            DecryptBdat->setMinimumWidth(200);
             taskGridLayout->addWidget(DecryptBdat, 2, 1);
 
             BdatCodeGen = new QPushButton("Bdat code generator", this);
-            BdatCodeGen->setFixedWidth(200);
+            BdatCodeGen->setMinimumWidth(200);
             taskGridLayout->addWidget(BdatCodeGen, 3, 1);
 
             Bdat2Html = new QPushButton("Bdat to HTML", this);
-            Bdat2Html->setFixedWidth(200);
+            Bdat2Html->setMinimumWidth(200);
             taskGridLayout->addWidget(Bdat2Html, 4, 1);
 
             Bdat2Json = new QPushButton("Bdat to JSON", this);
-            Bdat2Json->setFixedWidth(200);
+            Bdat2Json->setMinimumWidth(200);
             taskGridLayout->addWidget(Bdat2Json, 5, 1);
 
             Bdat2Psql = new QPushButton("Bdat to PSQL", this);
-            Bdat2Psql->setFixedWidth(200);
+            Bdat2Psql->setMinimumWidth(200);
             taskGridLayout->addWidget(Bdat2Psql, 6, 1);
 
             GenerateData = new QPushButton("Generate Data", this);
-            GenerateData->setFixedWidth(200);
+            GenerateData->setMinimumWidth(200);
             taskGridLayout->addWidget(GenerateData, 7, 1);
 
         QLabel *other = new QLabel("Other", this);
         taskGridLayout->addWidget(other, 1, 2);
             DescrambleScript = new QPushButton("Descramble Script", this);
-            DescrambleScript->setFixedWidth(200);
+            DescrambleScript->setMinimumWidth(200);
             taskGridLayout->addWidget(DescrambleScript, 2, 2);
 
             ExtractWilay = new QPushButton("Extract Wilay", this);
-            ExtractWilay->setFixedWidth(200);
+            ExtractWilay->setMinimumWidth(200);
             taskGridLayout->addWidget(ExtractWilay, 3, 2);
 
         QLabel *xb2only = new QLabel("Xenoblade 2 only", this);
         taskGridLayout->addWidget(xb2only, 1, 3);
             CreateBlade= new QPushButton("Create Blade", this);
-            CreateBlade->setFixedWidth(200);
+            CreateBlade->setMinimumWidth(200);
             taskGridLayout->addWidget(CreateBlade, 2, 3);
             CreateBlade->setEnabled(false);
 
             ReadSave = new QPushButton("Read Save", this);
-            ReadSave->setFixedWidth(200);
+            ReadSave->setMinimumWidth(200);
             taskGridLayout->addWidget(ReadSave, 3, 3);
             ReadSave->setEnabled(false);
 
             DecompressIraSave  = new QPushButton("Decompress Ira Save", this);
-            DecompressIraSave->setFixedWidth(200);
+            DecompressIraSave->setMinimumWidth(200);
             taskGridLayout->addWidget(DecompressIraSave, 4, 3);
             DecompressIraSave->setEnabled(false);
 
         QLabel *xb1DEonly = new QLabel("Xenoblade DE only", this);
         taskGridLayout->addWidget(xb1DEonly, 1, 4);
             GenerateDropTables = new QPushButton("Generate Drop Tables", this);
-            GenerateDropTables->setFixedWidth(200);
+            GenerateDropTables->setMinimumWidth(200);
             taskGridLayout->addWidget(GenerateDropTables, 2, 4);
             GenerateDropTables->setEnabled(false);
 
@@ -165,9 +165,11 @@ void MainWindow::archivePathDialog()
 
     QLabel *arhlabel = new QLabel("ARH path:");
     QLineEdit *arhPathEdit = new QLineEdit();
+        arhPathEdit->isReadOnly();
 
     QLabel *ardlabel = new QLabel("ARD path:");
     QLineEdit *ardPathEdit = new QLineEdit();
+        ardPathEdit->isReadOnly();
 
     QPushButton *archiveBrowse = new QPushButton("Set archive (.ard && .arh) location");
     QPushButton *okButton = new QPushButton("OK");
@@ -186,7 +188,13 @@ void MainWindow::archivePathDialog()
 
     connect(archiveBrowse, &QPushButton::clicked, &dialog, [&]()
     {
-        QString folder = QFileDialog::getExistingDirectory(&dialog, "Choose the folder where the archives are located");
+        QString folder = QFileDialog::getExistingDirectory
+        (
+            &dialog,
+            "Choose the folder where the archives are located",
+            QStandardPaths::writableLocation(QStandardPaths::HomeLocation) //Open the dialog at the user's folder
+        );
+        //Errors management
         if (QDir(folder).isEmpty()) { QMessageBox::warning(&dialog, "Missing files", "The folder is empty"); }
         else if (QFileInfo::exists(folder + "/"+archiveName+".arh") && QFileInfo::exists(folder + "/"+archiveName+".ard"))
         {
