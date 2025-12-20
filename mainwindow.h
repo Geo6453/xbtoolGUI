@@ -9,7 +9,11 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
-#include <QDebug>
+#include <QDialog>
+#include <QLineEdit>
+#include <QFileDialog>
+#include <QDir>
+#include <QMessageBox>
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +27,7 @@ public:
     QWidget* getCentralWidget() const {return centralWidget;}
     QString commandUser;
     QString commandGame;
+    QString archiveName;
     QString commandTask;
     QString commandArchive;
     QString commandBDAT;
@@ -32,6 +37,7 @@ public:
 private:
     QWidget *centralWidget;
     QStackedLayout *stack;
+    void archivePathDialog();
     //QGridLayout *gridLayout;
     QPushButton *xb1;
     QPushButton *xb2;
