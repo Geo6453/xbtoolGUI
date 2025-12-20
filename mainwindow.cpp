@@ -18,10 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
         connect(xb1, &QPushButton::clicked, this, [this, stack]()
         {
             commandGame = "xb1";
-            stack->setCurrentIndex(1);
             ExtractArchive->setEnabled(false);
             ReplaceArchive->setEnabled(false);
             GenerateDropTables->setEnabled(true);
+            stack->setCurrentIndex(1);
         });
 
         xb2 = new QPushButton("Xenoblade 2", this);
@@ -31,10 +31,10 @@ MainWindow::MainWindow(QWidget *parent)
         {
             commandGame = "xb2";
             archiveName = "bf2";
-            stack->setCurrentIndex(1);
             CreateBlade->setEnabled(true);
             ReadSave->setEnabled(true);
             DecompressIraSave->setEnabled(true);
+            stack->setCurrentIndex(1);
         });
 
         xb3 = new QPushButton("Xenoblade 3", this);
@@ -43,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
         connect(xb3, &QPushButton::clicked, this, [this, stack]()
         {
             archiveName = "bf3";
-            stack->setCurrentIndex(1);
             commandGame = "xb3";
+            stack->setCurrentIndex(1);
         });
 
         xbx = new QPushButton("Xenoblade X", this);
@@ -53,8 +53,8 @@ MainWindow::MainWindow(QWidget *parent)
         connect(xbx, &QPushButton::clicked, this, [this, stack]()
         {
             //archiveName = "sts";
-            stack->setCurrentIndex(1);
             commandGame = "xbx";
+            stack->setCurrentIndex(1);
         });
     stack->addWidget(home);
 
@@ -155,6 +155,8 @@ MainWindow::MainWindow(QWidget *parent)
     stack->addWidget(task);
 
     stack->setCurrentIndex(0);
+
+    qDebug() << "Test qDebug";
 }
 
 void MainWindow::archivePathDialog()
@@ -165,15 +167,17 @@ void MainWindow::archivePathDialog()
 
     QLabel *arhlabel = new QLabel("ARH path:");
     QLineEdit *arhPathEdit = new QLineEdit();
-        arhPathEdit->isReadOnly();
+        arhPathEdit->setReadOnly(true);
 
     QLabel *ardlabel = new QLabel("ARD path:");
     QLineEdit *ardPathEdit = new QLineEdit();
-        ardPathEdit->isReadOnly();
+        ardPathEdit->setReadOnly(true);
 
     QPushButton *archiveBrowse = new QPushButton("Set archive (.ard && .arh) location");
     QPushButton *okButton = new QPushButton("OK");
+        connect(okButton,     &QPushButton::clicked, &dialog, &QDialog::accept);
     QPushButton *cancelButton = new QPushButton("Cancel");
+        connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
     QGridLayout *gridDialog = new QGridLayout(&dialog);
         gridDialog->addWidget(arhlabel, 0, 0);
@@ -196,27 +200,20 @@ void MainWindow::archivePathDialog()
         );
         //Errors management
         if (QDir(folder).isEmpty()) { QMessageBox::warning(&dialog, "Missing files", "The folder is empty"); }
-        else if (QFileInfo::exists(folder + "/"+archiveName+".arh") && QFileInfo::exists(folder + "/"+archiveName+".ard"))
-        {
-            arhPathEdit->setText(folder + "/"+archiveName+".arh");
-            ardPathEdit->setText(folder + "/"+archiveName+".ard");
-        }
         else if (!QFileInfo::exists(folder + "/"+archiveName+".arh") && !QFileInfo::exists(folder + "/"+archiveName+".ard"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".arh & "+archiveName+".ard"); }
         else if (!QFileInfo::exists(folder + "/"+archiveName+".arh"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".arh"); }
         else if (!QFileInfo::exists(folder + "/"+archiveName+".ard"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".ard"); }
+        else if (QFileInfo::exists(folder + "/"+archiveName+".arh") && QFileInfo::exists(folder + "/"+archiveName+".ard"))
+        {
+            arhPathEdit->setText(folder + "/"+archiveName+".arh");
+            ardPathEdit->setText(folder + "/"+archiveName+".ard");
+        }
     });
 
     if (dialog.exec() == QDialog::Accepted)
-    {
-        QString chosenPath = arhPathEdit->text();
-        if (!chosenPath.isEmpty())
-        {
-            // WIP
-        }
-    }
+        { QString commandArchive = "-a \""+arhPathEdit->text()+"\" \""+ardPathEdit->text()+"\""; }
 }
-
 MainWindow::~MainWindow(){}

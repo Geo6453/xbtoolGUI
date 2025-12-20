@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QDebug>
 
 class MainWindow : public QMainWindow
 {
@@ -28,8 +29,8 @@ public:
     QWidget* getCentralWidget() const {return centralWidget;}
     QString commandUser;
     QString commandGame;
-    QString archiveName;
     QString commandTask;
+    QString archiveName;
     QString commandArchive;
     QString commandBDAT;
     QString commandInput;
