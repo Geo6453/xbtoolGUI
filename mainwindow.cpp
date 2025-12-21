@@ -12,12 +12,24 @@ MainWindow::MainWindow(QWidget *parent)
         QLabel *choiceGame = new QLabel("Choose game :", this);
         gridLayout->addWidget(choiceGame, 0, 0, 1, 2);
 
-        xb1 = new QPushButton("Xenoblade DE", this);
-        xb1->setMinimumHeight(100);
+        xb1 = new QPushButton("Xenoblade 1", this);
+        xb1->setMinimumHeight(50);
         gridLayout->addWidget(xb1, 1, 0);
         connect(xb1, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = " -g xb1";
+            commandGame = "xb1";
+            ExtractArchive->setEnabled(false);
+            ReplaceArchive->setEnabled(false);
+            GenerateDropTables->setEnabled(true);
+            stack->setCurrentIndex(1);
+        });
+
+        xb1de = new QPushButton("Xenoblade 1 DE", this);
+        xb1de->setMinimumHeight(50);
+        gridLayout->addWidget(xb1de, 1, 1);
+        connect(xb1de, &QPushButton::clicked, this, [this, stack]()
+        {
+            commandGame = "xb1de";
             ExtractArchive->setEnabled(false);
             ReplaceArchive->setEnabled(false);
             GenerateDropTables->setEnabled(true);
@@ -25,11 +37,11 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb2 = new QPushButton("Xenoblade 2", this);
-        xb2->setMinimumHeight(100);
-        gridLayout->addWidget(xb2, 1, 1);
+        xb2->setMinimumHeight(50);
+        gridLayout->addWidget(xb2, 2, 0);
         connect(xb2, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = " -g xb2";
+            commandGame = "xb2";
             archiveName = "bf2";
             CreateBlade->setEnabled(true);
             ReadSave->setEnabled(true);
@@ -38,22 +50,31 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb3 = new QPushButton("Xenoblade 3", this);
-        xb3->setMinimumHeight(100);
-        gridLayout->addWidget(xb3, 2, 0);
+        xb3->setMinimumHeight(50);
+        gridLayout->addWidget(xb3, 2, 1);
         connect(xb3, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = " -g xb3";
+            commandGame = "xb3";
             archiveName = "bf3";
             stack->setCurrentIndex(1);
         });
 
         xbx = new QPushButton("Xenoblade X", this);
-        xbx->setMinimumHeight(100);
-        gridLayout->addWidget(xbx, 2, 1);
+        xbx->setMinimumHeight(50);
+        gridLayout->addWidget(xbx, 3, 0);
         connect(xbx, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = " -g xbx";
-            //archiveName = "sts";
+            commandGame = "xbx";
+            stack->setCurrentIndex(1);
+        });
+
+        xbxde = new QPushButton("Xenoblade X DE", this);
+        xbxde->setMinimumHeight(50);
+        gridLayout->addWidget(xbxde, 3, 1);
+        connect(xbxde, &QPushButton::clicked, this, [this, stack]()
+        {
+            commandGame = "xbxde";
+            archiveName = "sts";
             stack->setCurrentIndex(1);
         });
     stack->addWidget(home);
@@ -74,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ExtractArchive, 2, 0);
             connect(ExtractArchive, &QPushButton::clicked, this, [this]()
             {
-                commandTask = " -t ExtractArchive";
+                commandTask = "ExtractArchive";
                 archivePathDialog();
             });
 
@@ -142,21 +163,18 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(GenerateDropTables, 2, 4);
             GenerateDropTables->setEnabled(false);
 
-        /*
-        QString commandUser;
-        QString commandGame;
-        QString commandTask;
-        QString commandArchive;
-        QString commandBDAT;
-        QString commandInput;
-        QString commandOutput;
-        */
-
     stack->addWidget(task);
-
     stack->setCurrentIndex(0);
 
-    qDebug() << "Test qDebug";
+    QString args = "-g xb3";
+
+    QString fullCommand = programOGpath + " " + args;
+
+    QProcess::startDetached(
+        "cmd.exe",
+        QStringList{ "/K", fullCommand }
+        );
+
 }
 
 void MainWindow::archivePathDialog()
@@ -189,7 +207,7 @@ void MainWindow::archivePathDialog()
 
         gridDialog->addWidget(arhPathEdit,          0, 1, 1, 4);
         gridDialog->addWidget(ardPathEdit,          1, 1, 1, 4);
-        gridDialog->addWidget(inputArchiveBrowse,        2, 1, 1, 4);
+        gridDialog->addWidget(inputArchiveBrowse,   2, 1, 1, 4);
         gridDialog->addWidget(outputArchiveEdit,    3, 1, 1, 4);
         gridDialog->addWidget(outputArchiveBrowse,  4, 1, 1, 4);
 
@@ -244,10 +262,20 @@ void MainWindow::archivePathDialog()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        QString commandArchive = " -a \"" + arhPathEdit->text() + "\" \"" + ardPathEdit->text() + "\"";
-        QString commandOutput = " -o \"" + outputArchiveEdit->text() + "\"";
-        QString commandUser =  "xbtool.exe" + commandGame + commandTask + commandArchive + commandOutput;
+        if (!QFileInfo::exists(programOGpath))
+        {
+            QMessageBox::critical(this, "Error", "XbTool.exe not found.");
+            return;
+        }
+        else { qDebug() << "Launching..."; }
+
+        QString commandArchive = "\"" + arhPathEdit->text() + "\" \"" + ardPathEdit->text() + "\"";
+        QString commandOutput = "\"" + outputArchiveEdit->text() + "\"";
+
+        commandUser << "-g" << commandGame << "-t" << commandTask << "-a" << commandArchive << "-o" << commandOutput;
+        qDebug() << commandUser;
         qDebug().noquote() << commandUser;
     }
 }
+
 MainWindow::~MainWindow(){}

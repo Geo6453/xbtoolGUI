@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QProcess>
 
 class MainWindow : public QMainWindow
 {
@@ -27,7 +28,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QWidget* getCentralWidget() const {return centralWidget;}
-    QString commandUser;
+    QStringList commandUser;
     QString commandGame;
     QString commandTask;
     QString archiveName;
@@ -35,16 +36,18 @@ public:
     QString commandBDAT;
     QString commandInput;
     QString commandOutput;
+    QString programOGpath = QDir("../../../XbTool").absoluteFilePath("XbTool.exe");
 
 private:
     QWidget *centralWidget;
     QStackedLayout *stack;
     void archivePathDialog();
-    //QGridLayout *gridLayout;
     QPushButton *xb1;
+    QPushButton *xb1de;
     QPushButton *xb2;
     QPushButton *xb3;
     QPushButton *xbx;
+    QPushButton *xbxde;
     QPushButton *ExtractArchive;
     QPushButton *ReplaceArchive;
     QPushButton *DecryptBdat;
