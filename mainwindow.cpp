@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(xb1, 1, 0);
         connect(xb1, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = "xb1";
+            commandGame = " -g xb1";
             ExtractArchive->setEnabled(false);
             ReplaceArchive->setEnabled(false);
             GenerateDropTables->setEnabled(true);
@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(xb2, 1, 1);
         connect(xb2, &QPushButton::clicked, this, [this, stack]()
         {
-            commandGame = "xb2";
+            commandGame = " -g xb2";
             archiveName = "bf2";
             CreateBlade->setEnabled(true);
             ReadSave->setEnabled(true);
@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(xb3, 2, 0);
         connect(xb3, &QPushButton::clicked, this, [this, stack]()
         {
+            commandGame = " -g xb3";
             archiveName = "bf3";
-            commandGame = "xb3";
             stack->setCurrentIndex(1);
         });
 
@@ -52,8 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(xbx, 2, 1);
         connect(xbx, &QPushButton::clicked, this, [this, stack]()
         {
+            commandGame = " -g xbx";
             //archiveName = "sts";
-            commandGame = "xbx";
             stack->setCurrentIndex(1);
         });
     stack->addWidget(home);
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ExtractArchive, 2, 0);
             connect(ExtractArchive, &QPushButton::clicked, this, [this]()
             {
-                commandTask = "ExtractArchive";
+                commandTask = " -t ExtractArchive";
                 archivePathDialog();
             });
 
@@ -166,54 +166,88 @@ void MainWindow::archivePathDialog()
     dialog.setMinimumWidth(400);
 
     QLabel *arhlabel = new QLabel("ARH path:");
-    QLineEdit *arhPathEdit = new QLineEdit();
-        arhPathEdit->setReadOnly(true);
-
     QLabel *ardlabel = new QLabel("ARD path:");
-    QLineEdit *ardPathEdit = new QLineEdit();
-        ardPathEdit->setReadOnly(true);
+    QLabel *outputArchiveLabel = new QLabel("Output directory :");
 
-    QPushButton *archiveBrowse = new QPushButton("Set archive (.ard && .arh) location");
+    QLineEdit *arhPathEdit = new QLineEdit();
+    QLineEdit *ardPathEdit = new QLineEdit();
+        QPushButton *inputArchiveBrowse = new QPushButton("Set archive (.ard && .arh) location");
+    QLineEdit *outputArchiveEdit = new QLineEdit();
+        QPushButton *outputArchiveBrowse = new QPushButton ("Set output directory");
+
+    arhPathEdit->setReadOnly(true);
+    ardPathEdit->setReadOnly(true);
+    outputArchiveEdit->setReadOnly(true);
+
     QPushButton *okButton = new QPushButton("OK");
-        connect(okButton,     &QPushButton::clicked, &dialog, &QDialog::accept);
     QPushButton *cancelButton = new QPushButton("Cancel");
-        connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
     QGridLayout *gridDialog = new QGridLayout(&dialog);
-        gridDialog->addWidget(arhlabel, 0, 0);
-        gridDialog->addWidget(arhPathEdit, 0, 1, 1, 4);
+        gridDialog->addWidget(arhlabel,             0, 0);
+        gridDialog->addWidget(ardlabel,             1, 0);
+        gridDialog->addWidget(outputArchiveLabel,   3, 0);
 
-        gridDialog->addWidget(ardlabel, 1, 0);
-        gridDialog->addWidget(ardPathEdit, 1, 1, 1, 4);
+        gridDialog->addWidget(arhPathEdit,          0, 1, 1, 4);
+        gridDialog->addWidget(ardPathEdit,          1, 1, 1, 4);
+        gridDialog->addWidget(inputArchiveBrowse,        2, 1, 1, 4);
+        gridDialog->addWidget(outputArchiveEdit,    3, 1, 1, 4);
+        gridDialog->addWidget(outputArchiveBrowse,  4, 1, 1, 4);
 
-        gridDialog->addWidget(archiveBrowse, 2, 1, 1, 4);
-        gridDialog->addWidget(okButton, 3, 3);
-        gridDialog->addWidget(cancelButton, 3, 4);
+        gridDialog->addWidget(okButton,             5, 3);
+        gridDialog->addWidget(cancelButton,         5, 4);
 
-    connect(archiveBrowse, &QPushButton::clicked, &dialog, [&]()
+    connect(inputArchiveBrowse, &QPushButton::clicked, &dialog, [&]()
     {
-        QString folder = QFileDialog::getExistingDirectory
+        QString inputFolder = QFileDialog::getExistingDirectory
         (
             &dialog,
             "Choose the folder where the archives are located",
             QStandardPaths::writableLocation(QStandardPaths::HomeLocation) //Open the dialog at the user's folder
         );
         //Errors management
-        if (QDir(folder).isEmpty()) { QMessageBox::warning(&dialog, "Missing files", "The folder is empty"); }
-        else if (!QFileInfo::exists(folder + "/"+archiveName+".arh") && !QFileInfo::exists(folder + "/"+archiveName+".ard"))
+        if (QDir(inputFolder).isEmpty()) { QMessageBox::warning(&dialog, "Missing files", "The folder is empty"); }
+        else if (!QFileInfo::exists(inputFolder + "/"+archiveName+".arh") && !QFileInfo::exists(inputFolder + "/"+archiveName+".ard"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".arh & "+archiveName+".ard"); }
-        else if (!QFileInfo::exists(folder + "/"+archiveName+".arh"))
+        else if (!QFileInfo::exists(inputFolder + "/"+archiveName+".arh"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".arh"); }
-        else if (!QFileInfo::exists(folder + "/"+archiveName+".ard"))
+        else if (!QFileInfo::exists(inputFolder + "/"+archiveName+".ard"))
             { QMessageBox::warning(&dialog, "Missing files", "Missing "+archiveName+".ard"); }
-        else if (QFileInfo::exists(folder + "/"+archiveName+".arh") && QFileInfo::exists(folder + "/"+archiveName+".ard"))
+        else if (QFileInfo::exists(inputFolder + "/"+archiveName+".arh") && QFileInfo::exists(inputFolder + "/"+archiveName+".ard"))
         {
-            arhPathEdit->setText(folder + "/"+archiveName+".arh");
-            ardPathEdit->setText(folder + "/"+archiveName+".ard");
+            arhPathEdit->setText(inputFolder + "/"+archiveName+".arh");
+            ardPathEdit->setText(inputFolder + "/"+archiveName+".ard");
         }
     });
 
+    connect(outputArchiveBrowse, &QPushButton::clicked, &dialog, [&]()
+    {
+        QString outputFolder = QFileDialog::getExistingDirectory
+        (
+            &dialog,
+            "Choose the directory for the archive's dump",
+            QStandardPaths::writableLocation(QStandardPaths::HomeLocation) //Open the dialog at the user's folder
+        );
+
+        if (QDir(outputFolder).isEmpty()) { outputArchiveEdit->setText(outputFolder); }
+        if (!QDir(outputFolder).isEmpty() && QMessageBox::question
+        (
+            &dialog, "Advice",
+            "The folder isn't empty, are you sure to dump your archive here?",
+            QMessageBox::Yes | QMessageBox::No
+        ) == QMessageBox::Yes) { outputArchiveEdit->setText(outputFolder); }
+        else { return; }
+    });
+
+    connect(okButton,     &QPushButton::clicked, &dialog, &QDialog::accept);
+
+    connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
+
     if (dialog.exec() == QDialog::Accepted)
-        { QString commandArchive = "-a \""+arhPathEdit->text()+"\" \""+ardPathEdit->text()+"\""; }
+    {
+        QString commandArchive = " -a \"" + arhPathEdit->text() + "\" \"" + ardPathEdit->text() + "\"";
+        QString commandOutput = " -o \"" + outputArchiveEdit->text() + "\"";
+        QString commandUser =  "xbtool.exe" + commandGame + commandTask + commandArchive + commandOutput;
+        qDebug().noquote() << commandUser;
+    }
 }
 MainWindow::~MainWindow(){}
