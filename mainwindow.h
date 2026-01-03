@@ -17,6 +17,10 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QProcess>
+#include <QProgressBar>
+#include <QPlainTextEdit>
+#include <QRegularExpression>
+#include <QScrollBar>
 
 class MainWindow : public QMainWindow
 {
@@ -32,10 +36,8 @@ public:
     QString commandGame;
     QString commandTask;
     QString archiveName;
-    QString commandArchive;
     QString commandBDAT;
     QString commandInput;
-    QString commandOutput;
     QString programOGpath = QDir("../../../XbTool").absoluteFilePath("XbTool.exe");
 
 private:
@@ -62,6 +64,5 @@ private:
     QPushButton *ReadSave;
     QPushButton *DecompressIraSave;
     QPushButton *GenerateDropTables;
-
 };
 #endif

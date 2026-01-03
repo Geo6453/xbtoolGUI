@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
         gridLayout->addWidget(choiceGame, 0, 0, 1, 2);
 
         xb1 = new QPushButton("Xenoblade 1", this);
-        xb1->setMinimumHeight(50);
+        xb1->setMinimumHeight(60);
         gridLayout->addWidget(xb1, 1, 0);
         connect(xb1, &QPushButton::clicked, this, [this, stack]()
         {
@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb1de = new QPushButton("Xenoblade 1 DE", this);
-        xb1de->setMinimumHeight(50);
+        xb1de->setMinimumHeight(60);
         gridLayout->addWidget(xb1de, 1, 1);
         connect(xb1de, &QPushButton::clicked, this, [this, stack]()
         {
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb2 = new QPushButton("Xenoblade 2", this);
-        xb2->setMinimumHeight(50);
+        xb2->setMinimumHeight(60);
         gridLayout->addWidget(xb2, 2, 0);
         connect(xb2, &QPushButton::clicked, this, [this, stack]()
         {
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xb3 = new QPushButton("Xenoblade 3", this);
-        xb3->setMinimumHeight(50);
+        xb3->setMinimumHeight(60);
         gridLayout->addWidget(xb3, 2, 1);
         connect(xb3, &QPushButton::clicked, this, [this, stack]()
         {
@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xbx = new QPushButton("Xenoblade X", this);
-        xbx->setMinimumHeight(50);
+        xbx->setMinimumHeight(60);
         gridLayout->addWidget(xbx, 3, 0);
         connect(xbx, &QPushButton::clicked, this, [this, stack]()
         {
@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
         });
 
         xbxde = new QPushButton("Xenoblade X DE", this);
-        xbxde->setMinimumHeight(50);
+        xbxde->setMinimumHeight(60);
         gridLayout->addWidget(xbxde, 3, 1);
         connect(xbxde, &QPushButton::clicked, this, [this, stack]()
         {
@@ -165,16 +165,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     stack->addWidget(task);
     stack->setCurrentIndex(0);
-
-    QString args = "-g xb3";
-
-    QString fullCommand = programOGpath + " " + args;
-
-    QProcess::startDetached(
-        "cmd.exe",
-        QStringList{ "/K", fullCommand }
-        );
-
 }
 
 void MainWindow::archivePathDialog()
@@ -201,18 +191,18 @@ void MainWindow::archivePathDialog()
     QPushButton *cancelButton = new QPushButton("Cancel");
 
     QGridLayout *gridDialog = new QGridLayout(&dialog);
-        gridDialog->addWidget(arhlabel,             0, 0);
-        gridDialog->addWidget(ardlabel,             1, 0);
-        gridDialog->addWidget(outputArchiveLabel,   3, 0);
+        gridDialog->addWidget(arhlabel,            0, 0);
+        gridDialog->addWidget(ardlabel,            1, 0);
+        gridDialog->addWidget(outputArchiveLabel,  3, 0);
 
-        gridDialog->addWidget(arhPathEdit,          0, 1, 1, 4);
-        gridDialog->addWidget(ardPathEdit,          1, 1, 1, 4);
-        gridDialog->addWidget(inputArchiveBrowse,   2, 1, 1, 4);
-        gridDialog->addWidget(outputArchiveEdit,    3, 1, 1, 4);
-        gridDialog->addWidget(outputArchiveBrowse,  4, 1, 1, 4);
+        gridDialog->addWidget(arhPathEdit,         0, 1, 1, 4);
+        gridDialog->addWidget(ardPathEdit,         1, 1, 1, 4);
+        gridDialog->addWidget(inputArchiveBrowse,  2, 1, 1, 4);
+        gridDialog->addWidget(outputArchiveEdit,   3, 1, 1, 4);
+        gridDialog->addWidget(outputArchiveBrowse, 4, 1, 1, 4);
 
-        gridDialog->addWidget(okButton,             5, 3);
-        gridDialog->addWidget(cancelButton,         5, 4);
+        gridDialog->addWidget(okButton,            5, 3);
+        gridDialog->addWidget(cancelButton,        5, 4);
 
     connect(inputArchiveBrowse, &QPushButton::clicked, &dialog, [&]()
     {
@@ -269,12 +259,73 @@ void MainWindow::archivePathDialog()
         }
         else { qDebug() << "Launching..."; }
 
-        QString commandArchive = "\"" + arhPathEdit->text() + "\" \"" + ardPathEdit->text() + "\"";
-        QString commandOutput = "\"" + outputArchiveEdit->text() + "\"";
-
-        commandUser << "-g" << commandGame << "-t" << commandTask << "-a" << commandArchive << "-o" << commandOutput;
+        commandUser.clear();
+        commandUser << "-g" << commandGame
+                    << "-t" << commandTask
+                    << "-a" << arhPathEdit->text()
+                            << ardPathEdit->text()
+                    << "-o" << outputArchiveEdit->text(); //CLI command parsing is different for user and QProcess
         qDebug() << commandUser;
         qDebug().noquote() << commandUser;
+
+        QDialog *progressDialog = new QDialog(this);
+            progressDialog->setWindowTitle("XbTool - Extracting");
+            progressDialog->setMinimumSize(500, 100);
+
+            QVBoxLayout *layout = new QVBoxLayout(progressDialog);
+
+            QProgressBar *progressBar = new QProgressBar(progressDialog);
+                progressBar->setRange(0, 100);
+                progressBar->setValue(0);
+                layout->addWidget(progressBar);
+
+            QProcess *process = new QProcess(progressDialog);
+                QString stdoutBuffer;
+                connect(process, &QProcess::readyReadStandardOutput, progressDialog, [=]() mutable
+                {
+                    stdoutBuffer += QString::fromLocal8Bit(process->readAllStandardOutput());
+                    static QRegularExpression re("/.*?(\\d{1,3}(?:[.,]\\d+)?)\\s*%");
+                    QRegularExpressionMatchIterator it = re.globalMatch(stdoutBuffer);
+                    double lastValue = -1.0;
+                    while (it.hasNext())
+                    {
+                        QRegularExpressionMatch m = it.next();
+                        QString num = m.captured(1);
+                        num.replace(',', '.');
+                        lastValue = num.toDouble();
+                    }
+                    if (lastValue >= 0.0 && lastValue <= 100.0)
+                    {
+                        progressBar->setValue(qRound(lastValue));
+                        progressBar->setFormat(QString::number(lastValue, 'f', 1) + " %");
+                    }
+                });
+
+            QPushButton *closeBtn = new QPushButton("Close", progressDialog);
+                closeBtn->setEnabled(false);
+                layout->addWidget(closeBtn);
+                connect(closeBtn, &QPushButton::clicked, progressDialog, &QDialog::accept);
+
+            QPushButton *cancelBtn = new QPushButton("Cancel", progressDialog);
+                layout->addWidget(cancelBtn);
+                connect(cancelBtn, &QPushButton::clicked, progressDialog, [=]()
+                {
+                    if (process->state() == QProcess::Running) process->kill();
+                    cancelBtn->setEnabled(false);
+                    closeBtn->setEnabled(true);
+                });
+
+            connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), progressDialog, [=](int, QProcess::ExitStatus)
+            {
+                progressBar->setValue(100);
+                progressBar->setFormat("100 %");
+                cancelBtn->setEnabled(false);
+                closeBtn->setEnabled(true);
+            });
+
+            process->start(programOGpath, commandUser);
+
+        progressDialog->show();
     }
 }
 
