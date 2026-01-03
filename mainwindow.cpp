@@ -83,16 +83,16 @@ MainWindow::MainWindow(QWidget *parent)
     QGridLayout *taskGridLayout = new QGridLayout(task);
     task->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         QLabel *currentSelectedGame = new QLabel("Current selected game : ", this);
-        taskGridLayout->addWidget(currentSelectedGame, 0, 0);
+            taskGridLayout->addWidget(currentSelectedGame, 0, 0);
 
         QLabel *choiceTask = new QLabel("Choose task :", this);
-        taskGridLayout->addWidget(choiceTask, 0, 1, 1, 2);
+            taskGridLayout->addWidget(choiceTask, 1, 0);
 
         QLabel *archive = new QLabel("Archive", this);
-        taskGridLayout->addWidget(archive, 1, 0);
+        taskGridLayout->addWidget(archive, 2, 0);
             ExtractArchive = new QPushButton("Extract Archive", this);
             ExtractArchive->setMinimumWidth(200);
-            taskGridLayout->addWidget(ExtractArchive, 2, 0);
+            taskGridLayout->addWidget(ExtractArchive, 3, 0);
             connect(ExtractArchive, &QPushButton::clicked, this, [this]()
             {
                 commandTask = "ExtractArchive";
@@ -101,66 +101,66 @@ MainWindow::MainWindow(QWidget *parent)
 
             ReplaceArchive = new QPushButton("Replace Archive", this);
             ReplaceArchive->setMinimumWidth(200);
-            taskGridLayout->addWidget(ReplaceArchive, 3, 0);
+            taskGridLayout->addWidget(ReplaceArchive, 4, 0);
 
         QLabel *bdat = new QLabel("BDAT", this);
-        taskGridLayout->addWidget(bdat, 1, 1);
+        taskGridLayout->addWidget(bdat, 2, 1);
             DecryptBdat = new QPushButton("Decrypt Bdat", this);
             DecryptBdat->setMinimumWidth(200);
-            taskGridLayout->addWidget(DecryptBdat, 2, 1);
+            taskGridLayout->addWidget(DecryptBdat, 3, 1);
 
             BdatCodeGen = new QPushButton("Bdat code generator", this);
             BdatCodeGen->setMinimumWidth(200);
-            taskGridLayout->addWidget(BdatCodeGen, 3, 1);
+            taskGridLayout->addWidget(BdatCodeGen, 4, 1);
 
             Bdat2Html = new QPushButton("Bdat to HTML", this);
             Bdat2Html->setMinimumWidth(200);
-            taskGridLayout->addWidget(Bdat2Html, 4, 1);
+            taskGridLayout->addWidget(Bdat2Html, 5, 1);
 
             Bdat2Json = new QPushButton("Bdat to JSON", this);
             Bdat2Json->setMinimumWidth(200);
-            taskGridLayout->addWidget(Bdat2Json, 5, 1);
+            taskGridLayout->addWidget(Bdat2Json, 6, 1);
 
             Bdat2Psql = new QPushButton("Bdat to PSQL", this);
             Bdat2Psql->setMinimumWidth(200);
-            taskGridLayout->addWidget(Bdat2Psql, 6, 1);
+            taskGridLayout->addWidget(Bdat2Psql, 7, 1);
 
             GenerateData = new QPushButton("Generate Data", this);
             GenerateData->setMinimumWidth(200);
-            taskGridLayout->addWidget(GenerateData, 7, 1);
+            taskGridLayout->addWidget(GenerateData, 8, 1);
 
         QLabel *other = new QLabel("Other", this);
-        taskGridLayout->addWidget(other, 1, 2);
+        taskGridLayout->addWidget(other, 2, 2);
             DescrambleScript = new QPushButton("Descramble Script", this);
             DescrambleScript->setMinimumWidth(200);
-            taskGridLayout->addWidget(DescrambleScript, 2, 2);
+            taskGridLayout->addWidget(DescrambleScript, 3, 2);
 
             ExtractWilay = new QPushButton("Extract Wilay", this);
             ExtractWilay->setMinimumWidth(200);
-            taskGridLayout->addWidget(ExtractWilay, 3, 2);
+            taskGridLayout->addWidget(ExtractWilay, 4, 2);
 
         QLabel *xb2only = new QLabel("Xenoblade 2 only", this);
-        taskGridLayout->addWidget(xb2only, 1, 3);
+        taskGridLayout->addWidget(xb2only, 2, 3);
             CreateBlade= new QPushButton("Create Blade", this);
             CreateBlade->setMinimumWidth(200);
-            taskGridLayout->addWidget(CreateBlade, 2, 3);
+            taskGridLayout->addWidget(CreateBlade, 3, 3);
             CreateBlade->setEnabled(false);
 
             ReadSave = new QPushButton("Read Save", this);
             ReadSave->setMinimumWidth(200);
-            taskGridLayout->addWidget(ReadSave, 3, 3);
+            taskGridLayout->addWidget(ReadSave, 4, 3);
             ReadSave->setEnabled(false);
 
             DecompressIraSave  = new QPushButton("Decompress Ira Save", this);
             DecompressIraSave->setMinimumWidth(200);
-            taskGridLayout->addWidget(DecompressIraSave, 4, 3);
+            taskGridLayout->addWidget(DecompressIraSave, 5, 3);
             DecompressIraSave->setEnabled(false);
 
         QLabel *xb1DEonly = new QLabel("Xenoblade DE only", this);
-        taskGridLayout->addWidget(xb1DEonly, 1, 4);
+        taskGridLayout->addWidget(xb1DEonly, 2, 4);
             GenerateDropTables = new QPushButton("Generate Drop Tables", this);
             GenerateDropTables->setMinimumWidth(200);
-            taskGridLayout->addWidget(GenerateDropTables, 2, 4);
+            taskGridLayout->addWidget(GenerateDropTables, 3, 4);
             GenerateDropTables->setEnabled(false);
 
     stack->addWidget(task);
