@@ -99,8 +99,10 @@ MainWindow::MainWindow(QWidget *parent)
 
         QPushButton *backToGameList = new QPushButton("Back");
             backToGameList->setMaximumWidth(60);
-            connect(backToGameList, &QPushButton::clicked, this, [stack]()
+            connect(backToGameList, &QPushButton::clicked, this, [this, stack]()
             {
+                commandGame = "";
+                archiveName = "";
                 stack->setCurrentIndex(0);
             });
             taskGridLayout->addWidget(backToGameList, 0, 1);
@@ -110,7 +112,6 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(choiceTask, 1, 0);
 
         QLabel *archive = new QLabel("Archive", this);
-            archive->setFont(italic);
             taskGridLayout->addWidget(archive, 2, 0);
             ExtractArchive = new QPushButton("Extract Archive", this);
             ExtractArchive->setMinimumWidth(200);
@@ -126,7 +127,6 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ReplaceArchive, 4, 0);
 
         QLabel *bdat = new QLabel("BDAT", this);
-            bdat->setFont(italic);
             taskGridLayout->addWidget(bdat, 2, 1);
             DecryptBdat = new QPushButton("Decrypt Bdat", this);
             DecryptBdat->setMinimumWidth(200);
@@ -153,7 +153,6 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(GenerateData, 8, 1);
 
         QLabel *other = new QLabel("Other", this);
-            other->setFont(italic);
             taskGridLayout->addWidget(other, 2, 2);
             DescrambleScript = new QPushButton("Descramble Script", this);
             DescrambleScript->setMinimumWidth(200);
@@ -164,7 +163,6 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ExtractWilay, 4, 2);
 
         QLabel *xb2only = new QLabel("Xenoblade 2 only", this);
-            xb2only->setFont(italic);
             taskGridLayout->addWidget(xb2only, 2, 3);
             CreateBlade= new QPushButton("Create Blade", this);
             CreateBlade->setMinimumWidth(200);
@@ -182,12 +180,17 @@ MainWindow::MainWindow(QWidget *parent)
             DecompressIraSave->setEnabled(false);
 
         QLabel *xb1DEonly = new QLabel("Xenoblade DE only", this);
-            xb1DEonly->setFont(italic);
             taskGridLayout->addWidget(xb1DEonly, 2, 4);
             GenerateDropTables = new QPushButton("Generate Drop Tables", this);
             GenerateDropTables->setMinimumWidth(200);
             taskGridLayout->addWidget(GenerateDropTables, 3, 4);
             GenerateDropTables->setEnabled(false);
+
+        archive->setFont(italic);
+        bdat->setFont(italic);
+        other->setFont(italic);
+        xb2only->setFont(italic);
+        xb1DEonly->setFont(italic);
 
     stack->addWidget(task);
     stack->setCurrentIndex(0);
