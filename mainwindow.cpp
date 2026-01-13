@@ -4,6 +4,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     centralWidget(new QWidget(this))
 {
+    bold.setBold(true);
+    italic.setItalic(true);
+    bolditalic.setBold(true);
+    bolditalic.setItalic(true);
+
     setCentralWidget(centralWidget);
     QStackedLayout *stack = new QStackedLayout(centralWidget); //stock all the menus
     QWidget *home = new QWidget();
@@ -22,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
             ReplaceArchive->setEnabled(false);
             GenerateDropTables->setEnabled(true);
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
 
         xb1de = new QPushButton("Xenoblade 1 DE", this);
@@ -34,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
             ReplaceArchive->setEnabled(false);
             GenerateDropTables->setEnabled(true);
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
 
         xb2 = new QPushButton("Xenoblade 2", this);
@@ -47,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
             ReadSave->setEnabled(true);
             DecompressIraSave->setEnabled(true);
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
 
         xb3 = new QPushButton("Xenoblade 3", this);
@@ -57,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
             commandGame = "xb3";
             archiveName = "bf3";
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
 
         xbx = new QPushButton("Xenoblade X", this);
@@ -66,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
         {
             commandGame = "xbx";
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
 
         xbxde = new QPushButton("Xenoblade X DE", this);
@@ -76,20 +86,32 @@ MainWindow::MainWindow(QWidget *parent)
             commandGame = "xbxde";
             archiveName = "sts";
             stack->setCurrentIndex(1);
+            CSGedit->setText("Current selected game : " + commandGame);
         });
     stack->addWidget(home);
 
     QWidget *task = new QWidget();
     QGridLayout *taskGridLayout = new QGridLayout(task);
     task->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        QLabel *currentSelectedGame = new QLabel("Current selected game : ", this);
-            taskGridLayout->addWidget(currentSelectedGame, 0, 0);
+        // CSG mean Current Selected Game
+        CSGedit = new QLabel("Current selected game : ...", this);
+            taskGridLayout->addWidget(CSGedit, 0, 0);
+
+        QPushButton *backToGameList = new QPushButton("Back");
+            backToGameList->setMaximumWidth(60);
+            connect(backToGameList, &QPushButton::clicked, this, [stack]()
+            {
+                stack->setCurrentIndex(0);
+            });
+            taskGridLayout->addWidget(backToGameList, 0, 1);
 
         QLabel *choiceTask = new QLabel("Choose task :", this);
+            choiceTask->setFont(bold);
             taskGridLayout->addWidget(choiceTask, 1, 0);
 
         QLabel *archive = new QLabel("Archive", this);
-        taskGridLayout->addWidget(archive, 2, 0);
+            archive->setFont(italic);
+            taskGridLayout->addWidget(archive, 2, 0);
             ExtractArchive = new QPushButton("Extract Archive", this);
             ExtractArchive->setMinimumWidth(200);
             taskGridLayout->addWidget(ExtractArchive, 3, 0);
@@ -104,7 +126,8 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ReplaceArchive, 4, 0);
 
         QLabel *bdat = new QLabel("BDAT", this);
-        taskGridLayout->addWidget(bdat, 2, 1);
+            bdat->setFont(italic);
+            taskGridLayout->addWidget(bdat, 2, 1);
             DecryptBdat = new QPushButton("Decrypt Bdat", this);
             DecryptBdat->setMinimumWidth(200);
             taskGridLayout->addWidget(DecryptBdat, 3, 1);
@@ -130,7 +153,8 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(GenerateData, 8, 1);
 
         QLabel *other = new QLabel("Other", this);
-        taskGridLayout->addWidget(other, 2, 2);
+            other->setFont(italic);
+            taskGridLayout->addWidget(other, 2, 2);
             DescrambleScript = new QPushButton("Descramble Script", this);
             DescrambleScript->setMinimumWidth(200);
             taskGridLayout->addWidget(DescrambleScript, 3, 2);
@@ -140,7 +164,8 @@ MainWindow::MainWindow(QWidget *parent)
             taskGridLayout->addWidget(ExtractWilay, 4, 2);
 
         QLabel *xb2only = new QLabel("Xenoblade 2 only", this);
-        taskGridLayout->addWidget(xb2only, 2, 3);
+            xb2only->setFont(italic);
+            taskGridLayout->addWidget(xb2only, 2, 3);
             CreateBlade= new QPushButton("Create Blade", this);
             CreateBlade->setMinimumWidth(200);
             taskGridLayout->addWidget(CreateBlade, 3, 3);
@@ -157,7 +182,8 @@ MainWindow::MainWindow(QWidget *parent)
             DecompressIraSave->setEnabled(false);
 
         QLabel *xb1DEonly = new QLabel("Xenoblade DE only", this);
-        taskGridLayout->addWidget(xb1DEonly, 2, 4);
+            xb1DEonly->setFont(italic);
+            taskGridLayout->addWidget(xb1DEonly, 2, 4);
             GenerateDropTables = new QPushButton("Generate Drop Tables", this);
             GenerateDropTables->setMinimumWidth(200);
             taskGridLayout->addWidget(GenerateDropTables, 3, 4);

@@ -40,6 +40,10 @@ public:
     QString commandInput;
     QString programOGpath = QDir("../../../XbTool").absoluteFilePath("XbTool.exe");
 
+    QFont bold;
+    QFont italic;
+    QFont bolditalic;
+
 private:
     QWidget *centralWidget;
     QStackedLayout *stack;
@@ -50,6 +54,7 @@ private:
     QPushButton *xb3;
     QPushButton *xbx;
     QPushButton *xbxde;
+    QLabel      *CSGedit;
     QPushButton *ExtractArchive;
     QPushButton *ReplaceArchive;
     QPushButton *DecryptBdat;
