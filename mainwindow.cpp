@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     bolditalic.setItalic(true);
 
     setCentralWidget(centralWidget);
+
     QStackedLayout *stack = new QStackedLayout(centralWidget); //stock all the menus
     QWidget *home = new QWidget();
     QGridLayout *gridLayout = new QGridLayout(home);
-    home->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         QLabel *choiceGame = new QLabel("Choose game :", this);
         gridLayout->addWidget(choiceGame, 0, 0, 1, 2);
 
@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
             commandGame = "xb1";
             ExtractArchive->setEnabled(false);
             ReplaceArchive->setEnabled(false);
-            GenerateDropTables->setEnabled(true);
             stack->setCurrentIndex(1);
             CSGedit->setText("Current selected game : " + commandGame);
         });
@@ -77,12 +76,12 @@ MainWindow::MainWindow(QWidget *parent)
             CSGedit->setText("Current selected game : " + commandGame);
         });
 
-        xb1     ->setMinimumHeight(60);
-        xb1de   ->setMinimumHeight(60);
-        xb2     ->setMinimumHeight(60);
-        xb3     ->setMinimumHeight(60);
-        xbx     ->setMinimumHeight(60);
-        xbxde   ->setMinimumHeight(60);
+        xb1   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        xb1de ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        xb2   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        xb3   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        xbx   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        xbxde ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         gridLayout->addWidget(xb1,   1, 0);
         gridLayout->addWidget(xb1de, 1, 1);
@@ -95,7 +94,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     QWidget *task = new QWidget();
     QGridLayout *taskGridLayout = new QGridLayout(task);
-    task->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         // CSG mean Current Selected Game
         CSGedit = new QLabel("Current selected game : ...", this);
             taskGridLayout->addWidget(CSGedit, 0, 0);
@@ -108,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent)
                 archiveName = "";
                 stack->setCurrentIndex(0);
             });
-            taskGridLayout->addWidget(backToGameList, 0, 1);
+            taskGridLayout->addWidget(backToGameList, 0, 1, 2, 1);
 
         QLabel *choiceTask = new QLabel("Choose task :", this);
             choiceTask->setFont(bold);
@@ -119,10 +117,14 @@ MainWindow::MainWindow(QWidget *parent)
             connect(ExtractArchive, &QPushButton::clicked, this, [this]()
             {
                 commandTask = "ExtractArchive";
-                archivePathDialog();
+                ExtractArchiveDialog();
             });
 
             ReplaceArchive = new QPushButton("Replace Archive", this);
+            connect(ReplaceArchive, &QPushButton::clicked, this, [this]()
+            {
+                commandTask = "ReplaceArchive";
+            });
 
             ExtractArchive->setMinimumWidth(200);
             ReplaceArchive->setMinimumWidth(200);
@@ -207,9 +209,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     stack->addWidget(task);
     stack->setCurrentIndex(0);
+
+    setFixedSize(sizeHint());
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenRect = screen->availableGeometry();
+    this->move(screenRect.center() - this->rect().center());
 }
 
-void MainWindow::archivePathDialog()
+void MainWindow::ExtractArchiveDialog()
 {
     QDialog dialog(this);
     dialog.setWindowTitle("Extract Archive");

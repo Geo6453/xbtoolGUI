@@ -21,6 +21,7 @@
 #include <QPlainTextEdit>
 #include <QRegularExpression>
 #include <QScrollBar>
+#include <QScreen>
 
 class MainWindow : public QMainWindow
 {
@@ -47,7 +48,7 @@ public:
 private:
     QWidget *centralWidget;
     QStackedLayout *stack;
-    void archivePathDialog();
+    void ExtractArchiveDialog();
     QPushButton *xb1;
     QPushButton *xb1de;
     QPushButton *xb2;
