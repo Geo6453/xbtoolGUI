@@ -41,6 +41,8 @@ public:
     QString commandInput;
     QString programOGpath = QDir("../../../XbTool").absoluteFilePath("XbTool.exe");
 
+    QString currentExplorerFolder;
+
     QFont bold;
     QFont italic;
     QFont bolditalic;
@@ -49,6 +51,8 @@ private:
     QWidget *centralWidget;
     QStackedLayout *stack;
     void ExtractArchiveDialog();
+    void ReplaceArchiveDialog();
+    void DecryptBdatDialog();
     QPushButton *xb1;
     QPushButton *xb1de;
     QPushButton *xb2;
